@@ -1,5 +1,5 @@
 <?php
-require_once 'models/Employee.php';
+require_once '../models/Employee.php';
 
 class EmployeeController {
   private $employee;
@@ -15,12 +15,12 @@ class EmployeeController {
   
   // Show all employees
   public function getEmployees() {
-    return $this->employee->getAll();
+    return $this->employee->getAllEmployees();
   }
 
   // Get an employee by id
   public function getEmployee($id) {
-      return $this->employee->getById($id);
+      return $this->employee->getEmployeeById($id);
   }
 
   // Update an employee
