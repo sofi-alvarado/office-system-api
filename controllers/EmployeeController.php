@@ -20,17 +20,17 @@ class EmployeeController {
 
   // Get an employee by id
   public function getEmployee($id) {
-      return $this->employee->getEmployeeById($id);
+    return $this->employee->getEmployeeById($id);
   }
 
   // Update an employee
   public function updateEmployee($id, $data) {
-      $this->employee->update($id, $data['name'], $data['lastname'], $data['genre'], $data['employment_area']);
+    $this->employee->update($id, $data['name'], $data['lastname'], $data['genre'], $data['employment_area']);
   }
 
   // Delete an employee
   public function deleteEmployee($id) {
-      $this->employee->delete($id);
+    $this->employee->delete($id);
   }
 }
 ?>
