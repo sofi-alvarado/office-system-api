@@ -1,23 +1,32 @@
 <?php
   require_once '../models/User.php';
+  require_once '../utils/JwtUtils.php';
 
   class UserController {
     private $userModel;
 
     public function __construct($pdo) {
+      $this->pdo = $pdo;
       $this->userModel = new UserModel($pdo);
-  }
+    }
+
     // Handle user authentication
     public function authenticateUser($email, $password) {
       $user = $this->userModel->authenticate($email, $password);
+
       if ($user) {
-        return ['status' => 'success', 'user' => $user];
+        $token = generateJWT($user['id'], $user['role']);
+        return [
+          'status' => 'success',
+          'token' => $token,
+          'user' => $user
+        ];
       } else {
         return ['status' => 'error', 'message' => 'Usuario o contraseña inválidos.'];
       }
     }
 
-      // Get all users
+    // Get all users
     public function getUsers() {
       return $this->userModel->getAllUsers();
     }
