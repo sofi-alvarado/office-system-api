@@ -1,11 +1,21 @@
 <?php
-require_once 'config/config.php';
-require_once 'controllers/EmployeeController.php';
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit(0);
+}
+
+require_once '../config/config.php';
+require_once '../models/Employee.php';
+require_once '../controllers/EmployeeController.php';
 
 $employeeController = new EmployeeController($pdo);
 
 $action = $_GET['action'];
 $id = isset($_GET['id']) ? intval($_GET['id']) : null;
+
 
 switch ($action) {
     // Employee Routes
