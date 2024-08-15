@@ -10,8 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 require_once '../config/config.php';
 require_once '../models/Employee.php';
 require_once '../controllers/EmployeeController.php';
+require_once '../controllers/UserController.php';
 
 $employeeController = new EmployeeController($pdo);
+$userController = new UserController($pdo); 
 
 $action = $_GET['action'];
 $id = isset($_GET['id']) ? intval($_GET['id']) : null;
@@ -22,7 +24,7 @@ switch ($action) {
     case 'createEmployee':
         $data = json_decode(file_get_contents('php://input'), true);
         $employeeController->createEmployee($data);
-        echo json_encode(["message" => "Employee created successfully!"]);
+        echo json_encode(["message" => "¡Empleado creado exitosamente!"]);
         break;
 
     case 'getEmployees':
@@ -35,7 +37,7 @@ switch ($action) {
             $employee = $employeeController->getEmployee($id);
             echo json_encode($employee);
         } else {
-            echo json_encode(["message" => "Employee ID is required"]);
+            echo json_encode(["message" => "Debe ingresar el ID del empleado."]);
         }
         break;
 
@@ -43,19 +45,56 @@ switch ($action) {
         if ($id) {
             $data = json_decode(file_get_contents('php://input'), true);
             $employeeController->updateEmployee($id, $data);
-            echo json_encode(["message" => "Employee updated successfully!"]);
+            echo json_encode(["message" => "¡Empleado actualizado exitosamente!"]);
         } else {
-            echo json_encode(["message" => "Employee ID is required"]);
+            echo json_encode(["message" => "Debe ingresar el ID del empleado."]);
         }
         break;
 
     case 'deleteEmployee':
         if ($id) {
             $employeeController->deleteEmployee($id);
-            echo json_encode(["message" => "Employee deleted successfully!"]);
+            echo json_encode(["message" => "¡Empleado eliminado exitosamente!"]);
         } else {
-            echo json_encode(["message" => "Employee ID is required"]);
+            echo json_encode(["message" => "Debe ingresar el ID del empleado."]);
         }
+        break;
+
+    case 'authenticate':
+        $data = json_decode(file_get_contents("php://input"), true);
+        $email = $data['email'] ?? '';
+        $password = $data['password'] ?? '';
+        
+        $response = $userController->authenticateUser($email, $password);
+        echo json_encode($response);
+    break;
+    
+    case 'getUsers':
+        $users = $userController->getUsers();
+        echo json_encode($users);
+        break;
+    
+    case 'updatePassword':
+        $id = $_POST['id'] ?? null;
+        $newPassword = $_POST['newPassword'] ?? '';
+        $response = $userController->updatePassword($id, $newPassword);
+        echo json_encode($response);
+    break;
+
+    case 'createUser':
+        $data = json_decode(file_get_contents("php://input"), true);
+        $email = $data['email'] ?? '';
+        $password = $data['password'] ?? '';
+        $role = $data['role'] ?? null;
+        $response = $userController->createUser($email, $password, $role);
+        echo json_encode($response);
+    break;
+
+    case 'logout':
+        session_start();
+        session_unset(); 
+        session_destroy(); 
+        echo json_encode(['status' => 'success', 'message' => '¡Sesión cerrada exitosamente!']);
         break;
 
     default:
