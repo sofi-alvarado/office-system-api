@@ -48,6 +48,17 @@ if ($action === 'authenticate') {
   exit();
 }
 
+if ($action === 'createUser') {
+  $data = json_decode(file_get_contents("php://input"), true);
+  $email = $data['email'] ?? '';
+  $password = $data['password'] ?? '';
+  $role = $data['role'] ?? '';
+
+  $response = $userController->createUser($email, $password, $role);
+  echo json_encode($response);
+  exit();
+}
+
 $decodedToken = authenticateRequest();
 
 switch ($action) {
@@ -108,15 +119,6 @@ switch ($action) {
     $id = $_POST['id'] ?? null;
     $newPassword = $_POST['newPassword'] ?? '';
     $response = $userController->updatePassword($id, $newPassword);
-    echo json_encode($response);
-  break;
-
-  case 'createUser':
-    $data = json_decode(file_get_contents("php://input"), true);
-    $email = $data['email'] ?? '';
-    $password = $data['password'] ?? '';
-    $role = $data['role'] ?? null;
-    $response = $userController->createUser($email, $password, $role);
     echo json_encode($response);
   break;
 
